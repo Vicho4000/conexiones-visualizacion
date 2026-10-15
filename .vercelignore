@@ -1,0 +1,43 @@
+# Dependencias y resultados locales
+node_modules
+.next
+out
+build
+*.tsbuildinfo
+
+# Configuración local y herramientas internas
+.env*
+!.env.example
+.git
+.agents
+.claude
+.codex
+.impeccable
+.vercel
+.DS_Store
+
+# Material de trabajo que no utiliza el sitio publicado
+recursos
+documentacion
+herramientas
+PRODUCT.md
+AGENTS.md
+GUIA_DE_CARPETAS.md
+public/modelos
+
+# Microdatos y archivos procesados auxiliares
+data/raw
+data/processed/*
+!data/processed/ebs-profiles.json
+
+# Prototipos no utilizados por la página activa
+components/filtros/FiltroEdad.tsx
+components/filtros/FiltroGenero.tsx
+components/visualizacion/CampoPersonas.tsx
+components/visualizacion/Leyenda.tsx
+components/visualizacion/MetricasPerfil.tsx
+components/visualizacion/Persona.tsx
+lib/calculos-visualizacion/posiciones.ts
+lib/data.ts
+lib/positioning.ts
+lib/scales.ts
