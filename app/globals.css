@@ -1,0 +1,196 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+  --ink: #111827;
+  --muted: #475569;
+  --accent: #5145cd;
+  --surface: #ffffff;
+}
+
+body {
+  margin: 0;
+  min-width: 0;
+  overflow-x: clip;
+  background:
+    radial-gradient(
+      circle at 52% 46%,
+      rgba(238, 242, 255, 0.8),
+      transparent 40%
+    ),
+    #fdfdff;
+  color: #0f172a;
+  font-family:
+    "Avenir Next", Avenir, "Segoe UI Variable", "Segoe UI", sans-serif;
+}
+
+::selection {
+  background: #c7d2fe;
+  color: #1e1b4b;
+}
+
+button {
+  font: inherit;
+}
+
+.age-slider {
+  height: 44px;
+  appearance: none;
+  background: transparent;
+}
+
+.age-slider::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: #c7d2fe;
+}
+
+.age-slider::-webkit-slider-thumb {
+  width: 18px;
+  height: 18px;
+  margin-top: -7px;
+  appearance: none;
+  border: 3px solid white;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 2px 8px rgb(30 27 75 / 24%);
+}
+
+.age-slider::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: #c7d2fe;
+}
+
+.age-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border: 3px solid white;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+.visualization-stage {
+  --scene-x: 0px;
+  --scene-y: 0px;
+  --focus-x: 0px;
+  --focus-y: 0px;
+  background: radial-gradient(
+    ellipse 44% 16% at 50% 65%,
+    rgba(99, 102, 241, 0.07),
+    transparent 72%
+  );
+}
+
+.support-person {
+  transform-origin: 50% 82%;
+}
+
+.profile-detail-enter {
+  animation: detail-enter 240ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.insight-enter {
+  animation: insight-enter 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.first-visit-hint {
+  animation: hint-enter 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.previous-profile-ghost {
+  animation: previous-profile-fade 900ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.scene-loading {
+  animation: loading-fade 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes detail-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes insight-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+    filter: blur(3px);
+  }
+}
+
+@keyframes hint-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+    filter: blur(4px);
+  }
+}
+
+@keyframes previous-profile-fade {
+  from {
+    opacity: 0.3;
+    transform: translateX(-5px) scale(0.99);
+    filter: grayscale(1) blur(1px);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(5px) scale(1.01);
+    filter: grayscale(1) blur(3px);
+  }
+}
+
+@keyframes loading-fade {
+  from {
+    opacity: 0.45;
+  }
+
+  to {
+    opacity: 0.8;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .visualization-stage {
+    --scene-x: 0px !important;
+    --scene-y: 0px !important;
+    --focus-x: 0px !important;
+    --focus-y: 0px !important;
+  }
+
+  .support-person,
+  .central-person-glow,
+  .metric-bar,
+  [data-testid="central-person"] span,
+  .scene-loading,
+  .profile-detail-enter {
+    animation: none;
+    transition-duration: 0ms;
+  }
+
+  .insight-enter {
+    animation: none;
+  }
+
+  .first-visit-hint {
+    animation: none;
+  }
+
+  .previous-profile-ghost {
+    display: none;
+  }
+}
+
+@keyframes person-enter {
+  from {
+    opacity: 0;
+    translate: 0 12px;
+  }
+
+  to {
+    translate: 0 0;
+  }
+}

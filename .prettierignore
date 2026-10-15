@@ -1,0 +1,9 @@
+.next
+node_modules
+.agents
+.claude
+package-lock.json
+data/processed/source-inventory.json
+data/processed/variable-candidates.json
+data/processed/ebs-validation-summary.json
+data/processed/ebs-profiles.json

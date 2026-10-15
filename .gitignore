@@ -1,0 +1,67 @@
+# Dependencies
+/node_modules
+
+# Next.js build output
+/.next
+/out
+
+# Production output
+/build
+
+# Local environment files (keep the example)
+.env*
+!.env.example
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editors and operating systems
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Vercel
+.vercel
+
+# Local agent and design-tool configuration
+/.agents
+/.claude
+/.codex
+/.impeccable
+
+# Internal working material not required by the published site
+/recursos
+/documentacion
+/herramientas
+/PRODUCT.md
+/AGENTS.md
+/GUIA_DE_CARPETAS.md
+/public/modelos
+/public/.gitkeep
+
+# Unused prototypes kept locally, not required by the published page
+/components/filtros/FiltroEdad.tsx
+/components/filtros/FiltroGenero.tsx
+/components/visualizacion/CampoPersonas.tsx
+/components/visualizacion/Leyenda.tsx
+/components/visualizacion/MetricasPerfil.tsx
+/components/visualizacion/Persona.tsx
+/lib/calculos-visualizacion/posiciones.ts
+/lib/data.ts
+/lib/positioning.ts
+/lib/scales.ts
+
+# Keep only the processed dataset consumed by the page
+/data/processed/*
+!/data/processed/ebs-profiles.json
+
+# Raw survey microdata: local-only, large and potentially sensitive
+/data/raw
