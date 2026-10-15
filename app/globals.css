@@ -97,6 +97,25 @@ button {
   animation: central-pose-enter 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+.wellbeing-light-primary,
+.wellbeing-light-secondary {
+  background: radial-gradient(
+    ellipse at 46% 48%,
+    color-mix(in srgb, currentColor 78%, transparent) 0%,
+    color-mix(in srgb, currentColor 42%, transparent) 38%,
+    transparent 74%
+  );
+}
+
+.wellbeing-light-secondary {
+  background: radial-gradient(
+    ellipse at 54% 52%,
+    color-mix(in srgb, currentColor 66%, transparent) 0%,
+    color-mix(in srgb, currentColor 30%, transparent) 42%,
+    transparent 76%
+  );
+}
+
 .profile-detail-enter {
   animation: detail-enter 240ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }

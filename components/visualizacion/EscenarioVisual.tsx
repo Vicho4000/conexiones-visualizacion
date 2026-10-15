@@ -42,8 +42,6 @@ const POSE_INDEX: Record<LonelinessPose, number> = {
   sitting: 2,
 };
 
-const CONNECTED_ANGLES = [0, 1, 7, 2, 6, 3, 5, 4, 0, 4];
-
 const AGE_ASSET_SLUG: Record<AgeGroup, string> = {
   "18-29": "18-29",
   "30-44": "30-44",
@@ -51,19 +49,6 @@ const AGE_ASSET_SLUG: Record<AgeGroup, string> = {
   "60-79": "60-79",
   "80+": "80-mas",
 };
-
-const CONNECTED_GROUP_POSITIONS = [
-  { left: 50, top: 10 },
-  { left: 18, top: 32 },
-  { left: 82, top: 32 },
-  { left: 12, top: 65 },
-  { left: 88, top: 65 },
-  { left: 25, top: 76 },
-  { left: 75, top: 76 },
-  { left: 29, top: 25 },
-  { left: 71, top: 25 },
-  { left: 50, top: 91 },
-];
 
 function getSupportSheet(ageGroup: AgeGroup) {
   return `/personas/red-de-apoyo/red-apoyo-${AGE_ASSET_SLUG[ageGroup]}.webp`;
@@ -86,10 +71,6 @@ function clampPosition(position: number, size: number) {
   const margin = size / 2 + 2;
 
   return Math.min(100 - margin, Math.max(margin, position));
-}
-
-function interpolate(from: number, to: number, progress: number) {
-  return from + (to - from) * progress;
 }
 
 function keepOutsideCentralFigure(
@@ -130,8 +111,6 @@ export default function VisualizationScene({
   const centralSheet = getCentralSheet(sex);
   const wellbeingLevel = getWellbeingLevel(wellbeing);
   const supportLevel = 1 - isolation;
-  const socialSpread = 0.78 + isolation * 0.3;
-  const groupingStrength = Math.max(0, (supportLevel - 0.55) / 0.45);
 
   return (
     <div
@@ -147,30 +126,9 @@ export default function VisualizationScene({
     >
       {PERSON_PLACEMENTS.map((placement, index) => {
         const isVisible = index < peopleCount;
-        const responsiveAngle =
-          supportLevel >= 0.67 ? CONNECTED_ANGLES[index] : placement.angle;
-        const groupedPosition = CONNECTED_GROUP_POSITIONS[index];
-        const responsiveLeft = interpolate(
-          placement.left,
-          groupedPosition.left,
-          groupingStrength,
-        );
-        const responsiveTop = interpolate(
-          placement.top,
-          groupedPosition.top,
-          groupingStrength,
-        );
-        const initialHorizontalPosition = clampPosition(
-          50 + (responsiveLeft - 50) * socialSpread,
-          placement.size,
-        );
-        const initialVerticalPosition = clampPosition(
-          53 + (responsiveTop - 53) * socialSpread,
-          placement.size,
-        );
         const safePosition = keepOutsideCentralFigure(
-          initialHorizontalPosition,
-          initialVerticalPosition,
+          clampPosition(placement.left, placement.size),
+          clampPosition(placement.top, placement.size),
           placement.size,
           index,
         );
@@ -178,25 +136,24 @@ export default function VisualizationScene({
         return (
           <div
             key={`support-person-${index}`}
-            className="support-person pointer-events-none absolute aspect-square transition-[left,top,opacity,transform] duration-[420ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+            className="support-person pointer-events-none absolute aspect-square transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
             data-active={isVisible}
             style={{
               left: `${safePosition.left}%`,
               top: `${safePosition.top}%`,
               width: `${placement.size}%`,
               zIndex: placement.depth,
-              opacity: isVisible ? 0.58 + supportLevel * 0.42 : 0,
+              opacity: isVisible ? 0.64 + supportLevel * 0.3 : 0,
               transform: `translate(-50%, ${isVisible ? "-50%" : "-42%"}) scale(${isVisible ? 0.92 + supportLevel * 0.08 : 0.86})`,
-              transitionDelay: `${index * 12}ms`,
+              transitionDelay: `${index * 8}ms`,
             }}
             aria-hidden="true"
           >
             <span
               className="absolute inset-0 bg-no-repeat"
               style={{
-                filter: `grayscale(${0.98 - supportLevel * 0.24}) saturate(${0.2 + supportLevel * 0.34}) drop-shadow(0 18px 16px rgba(51, 65, 85, ${0.08 + supportLevel * 0.08}))`,
                 backgroundImage: `url('${getSupportSheet(ageGroup)}')`,
-                backgroundPosition: getAnglePosition(responsiveAngle),
+                backgroundPosition: getAnglePosition(placement.angle),
                 backgroundSize: "400% 200%",
               }}
             />
@@ -211,9 +168,6 @@ export default function VisualizationScene({
         aria-controls="profile-detail"
         data-testid="central-person"
         className="absolute left-1/2 top-[53%] z-[100] aspect-[1/3] h-[44%] max-h-[16rem] w-auto -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-[42%] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-500 sm:h-[46%]"
-        style={{
-          filter: "drop-shadow(0 22px 20px rgba(79, 70, 170, 0.18))",
-        }}
         onPointerEnter={(event) => {
           if (event.pointerType === "mouse") onCentralHoverChange(true);
         }}
@@ -229,32 +183,30 @@ export default function VisualizationScene({
         onBlur={() => onCentralHoverChange(false)}
       >
         <span
-          className="central-person-glow pointer-events-none absolute z-0 transition-[inset,opacity,transform] duration-[360ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+          className="central-person-glow pointer-events-none absolute z-0 transition-[inset,opacity,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
           style={{
             left: selectedPoseIndex === 2 ? "-115%" : "-85%",
             right: selectedPoseIndex === 2 ? "-115%" : "-85%",
             top: selectedPoseIndex === 2 ? "36%" : "8%",
             bottom: selectedPoseIndex === 2 ? "-8%" : "3%",
-            opacity: 0.2 + wellbeing * 0.14,
+            opacity: 0.34 + wellbeing * 0.22,
             transform: `rotate(${selectedPoseIndex === 1 ? 5 : selectedPoseIndex === 2 ? -3 : -5}deg) scale(${1.02 + wellbeing * 0.04})`,
           }}
           aria-hidden="true"
           data-wellbeing-level={wellbeingLevel.id}
         >
           <span
-            className="absolute inset-[4%_12%_8%_2%] transition-colors duration-[360ms]"
+            className="wellbeing-light-primary absolute inset-[4%_12%_8%_2%] transition-colors duration-300"
             style={{
-              backgroundColor: wellbeingLevel.color,
+              color: wellbeingLevel.color,
               borderRadius: "44% 56% 63% 37% / 58% 38% 62% 42%",
-              filter: `blur(${18 + wellbeing * 7}px)`,
             }}
           />
           <span
-            className="absolute inset-[22%_-2%_-3%_34%] transition-colors duration-[360ms]"
+            className="wellbeing-light-secondary absolute inset-[22%_-2%_-3%_34%] transition-colors duration-300"
             style={{
-              backgroundColor: wellbeingLevel.color,
+              color: wellbeingLevel.color,
               borderRadius: "61% 39% 42% 58% / 36% 64% 41% 59%",
-              filter: `blur(${22 + wellbeing * 8}px)`,
             }}
           />
         </span>

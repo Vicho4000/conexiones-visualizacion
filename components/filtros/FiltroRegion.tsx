@@ -7,28 +7,7 @@ type RegionFilterProps = {
   onChange: (value: string) => void;
 };
 
-const REGION_LAYER_IDS: Record<string, string> = {
-  "Arica Y Parinacota": "map_chile_AricaParinacota",
-  Tarapaca: "map_chile_Tarapaca",
-  Antofagasta: "map_chile_Antofagasta",
-  Atacama: "map_chile_Atacama",
-  Coquimbo: "map_chile_Coquimbo",
-  Valparaiso: "map_chile_Valparaiso",
-  "Metropolitana De Santiago": "map_chile_Metropolitana",
-  "Libertador General Bernardo O'higgins": "map_chile_OHiggins",
-  Maule: "map_chile_Maule",
-  Ñuble: "map_chile_Nuble",
-  Biobio: "map_chile_Biobio",
-  "La Araucania": "map_chile_Araucania",
-  "Los Rios": "map_chile_Los_Rios",
-  "Los Lagos": "map_chile_Los_Lagos",
-  "Aysen Del General Carlos Ibañez Del Campo": "map_chile_Aysen",
-  "Magallanes Y De La Antartica Chilena": "map_chile_Magallanes",
-};
-
 export function RegionFilter({ value, options, onChange }: RegionFilterProps) {
-  const selectedLayer = REGION_LAYER_IDS[value];
-
   return (
     <div className="grid w-full min-w-0 max-w-full gap-2 overflow-hidden">
       <label
@@ -63,13 +42,8 @@ export function RegionFilter({ value, options, onChange }: RegionFilterProps) {
       </span>
       <div className="mt-1 flex h-32 items-center justify-center rounded-xl bg-white/70">
         <Image
-          key={value}
-          src={`/mapas/regiones-de-chile.svg${selectedLayer ? `#${selectedLayer}` : ""}`}
-          alt={
-            value === "all"
-              ? "Mapa de todas las regiones de Chile"
-              : `Mapa de Chile con ${options.find((option) => option.id === value)?.label ?? value} destacada`
-          }
+          src="/mapas/regiones-de-chile.svg"
+          alt="Mapa de Chile dividido en regiones"
           width={1640}
           height={280}
           unoptimized
