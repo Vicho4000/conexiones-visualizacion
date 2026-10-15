@@ -272,18 +272,6 @@ export function Visualization({ profiles, metadata }: VisualizationProps) {
             loneliness={visualValues.loneliness}
             isolation={visualValues.isolation}
             wellbeing={visualValues.wellbeing}
-            previousProfile={
-              previousProfile
-                ? {
-                    sex: previousProfile.sex,
-                    loneliness: getVisualEncodingValues(
-                      previousProfile,
-                      profiles,
-                    ).loneliness,
-                    comparisonKey: `${previousProfile.region}-${previousProfile.ageGroup}-${previousProfile.sex}-${profile.region}-${profile.ageGroup}-${profile.sex}`,
-                  }
-                : undefined
-            }
             isSummaryVisible={isCentralHovered}
             onCentralHoverChange={(isVisible) => {
               if (isVisible) {

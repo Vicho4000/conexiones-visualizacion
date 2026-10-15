@@ -71,10 +71,6 @@ button {
 }
 
 .visualization-stage {
-  --scene-x: 0px;
-  --scene-y: 0px;
-  --focus-x: 0px;
-  --focus-y: 0px;
   background: radial-gradient(
     ellipse 44% 16% at 50% 65%,
     rgba(99, 102, 241, 0.07),
@@ -83,7 +79,22 @@ button {
 }
 
 .support-person {
+  contain: layout paint;
   transform-origin: 50% 82%;
+}
+
+.central-person-pose {
+  opacity: 0;
+  transform: translateY(6px) scale(0.985);
+  transition:
+    opacity 180ms ease-out,
+    transform 180ms ease-out;
+}
+
+.central-person-pose.is-active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  animation: central-pose-enter 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .profile-detail-enter {
@@ -96,10 +107,6 @@ button {
 
 .first-visit-hint {
   animation: hint-enter 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.previous-profile-ghost {
-  animation: previous-profile-fade 900ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .scene-loading {
@@ -129,17 +136,10 @@ button {
   }
 }
 
-@keyframes previous-profile-fade {
+@keyframes central-pose-enter {
   from {
-    opacity: 0.3;
-    transform: translateX(-5px) scale(0.99);
-    filter: grayscale(1) blur(1px);
-  }
-
-  to {
-    opacity: 0;
-    transform: translateX(5px) scale(1.01);
-    filter: grayscale(1) blur(3px);
+    opacity: 0.55;
+    transform: translateY(7px) scale(0.985);
   }
 }
 
@@ -154,15 +154,9 @@ button {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .visualization-stage {
-    --scene-x: 0px !important;
-    --scene-y: 0px !important;
-    --focus-x: 0px !important;
-    --focus-y: 0px !important;
-  }
-
   .support-person,
   .central-person-glow,
+  .central-person-pose,
   .metric-bar,
   [data-testid="central-person"] span,
   .scene-loading,
@@ -177,10 +171,6 @@ button {
 
   .first-visit-hint {
     animation: none;
-  }
-
-  .previous-profile-ghost {
-    display: none;
   }
 }
 
