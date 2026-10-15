@@ -275,6 +275,7 @@ export function Visualization({ profiles, metadata }: VisualizationProps) {
             previousProfile={
               previousProfile
                 ? {
+                    ageGroup: previousProfile.ageGroup,
                     sex: previousProfile.sex,
                     loneliness: getVisualEncodingValues(
                       previousProfile,

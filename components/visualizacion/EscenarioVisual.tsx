@@ -14,6 +14,7 @@ type VisualizationSceneProps = {
   isolation: number;
   wellbeing: number;
   previousProfile?: {
+    ageGroup: AgeGroup;
     sex: ProfileSex;
     loneliness: number;
     comparisonKey: string;
@@ -49,6 +50,11 @@ const POSE_INDEX: Record<LonelinessPose, number> = {
   sitting: 2,
 };
 
+const CENTRAL_POSE_OFFSET: Record<ProfileSex, [number, number, number]> = {
+  female: [-14, 4, 25],
+  male: [-10, 3, 24],
+};
+
 const CONNECTED_ANGLES = [0, 1, 7, 2, 6, 3, 5, 4, 0, 4];
 
 const AGE_ASSET_SLUG: Record<AgeGroup, string> = {
@@ -59,9 +65,27 @@ const AGE_ASSET_SLUG: Record<AgeGroup, string> = {
   "80+": "80-mas",
 };
 
+const CENTRAL_PERSON_ASSETS: Record<ProfileSex, Record<AgeGroup, string>> = {
+  female: {
+    "18-29": "/personas/persona-central/persona-central-mujer-18-29.webp",
+    "30-44": "/personas/persona-central/persona-central-mujer-30-44.webp",
+    "45-59": "/personas/persona-central/persona-central-mujer-45-59.webp",
+    "60-79": "/personas/persona-central/persona-central-mujer-60-79.webp",
+    "80+": "/personas/persona-central/persona-central-mujer-80-mas.webp",
+  },
+  male: {
+    "18-29": "/personas/persona-central/persona-central-hombre-18-29.webp",
+    "30-44": "/personas/persona-central/persona-central-hombre-30-44.webp",
+    "45-59": "/personas/persona-central/persona-central-hombre-45-59.webp",
+    "60-79": "/personas/persona-central/persona-central-hombre-60-79.webp",
+    "80+": "/personas/persona-central/persona-central-hombre-80-mas.webp",
+  },
+};
+
 const SCENE_IMAGE_ASSETS = [
-  "/personas/persona-central/persona-central-mujer-generica.webp",
-  "/personas/persona-central/persona-central-hombre-generico.webp",
+  ...Object.values(CENTRAL_PERSON_ASSETS).flatMap((assets) =>
+    Object.values(assets),
+  ),
   ...Object.values(AGE_ASSET_SLUG).map(
     (age) => `/personas/red-de-apoyo/red-apoyo-${age}.webp`,
   ),
@@ -84,10 +108,8 @@ function getSupportSheet(ageGroup: AgeGroup) {
   return `/personas/red-de-apoyo/red-apoyo-${AGE_ASSET_SLUG[ageGroup]}.webp`;
 }
 
-function getCentralSheet(sex: ProfileSex) {
-  return sex === "female"
-    ? "/personas/persona-central/persona-central-mujer-generica.webp"
-    : "/personas/persona-central/persona-central-hombre-generico.webp";
+function getCentralSheet(sex: ProfileSex, ageGroup: AgeGroup) {
+  return CENTRAL_PERSON_ASSETS[sex][ageGroup];
 }
 
 function getAnglePosition(angle: number) {
@@ -147,7 +169,7 @@ export default function VisualizationScene({
   const peopleCount = getPeopleCount(isolation);
   const pose = getLonelinessPose(loneliness);
   const selectedPoseIndex = POSE_INDEX[pose];
-  const centralSheet = getCentralSheet(sex);
+  const centralSheet = getCentralSheet(sex, ageGroup);
   const wellbeingLevel = getWellbeingLevel(wellbeing);
   const supportLevel = 1 - isolation;
   const socialSpread = 0.78 + isolation * 0.3;
@@ -302,7 +324,7 @@ export default function VisualizationScene({
         aria-expanded={isSummaryVisible}
         aria-controls="profile-detail"
         data-testid="central-person"
-        className="absolute left-1/2 top-[53%] z-[100] aspect-[1/3] h-[44%] max-h-[16rem] w-auto cursor-pointer rounded-[42%] transition-transform duration-200 ease-out focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-500 sm:h-[46%]"
+        className="absolute left-1/2 top-[53%] z-[100] aspect-[1/3] h-[42%] max-h-[15rem] w-auto cursor-pointer rounded-[42%] transition-transform duration-200 ease-out focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-500 sm:h-[44%]"
         style={{
           filter: "drop-shadow(0 22px 20px rgba(79, 70, 170, 0.18))",
           transform:
@@ -359,9 +381,9 @@ export default function VisualizationScene({
         {previousProfile ? (
           <span
             key={previousProfile.comparisonKey}
-            className="previous-profile-ghost pointer-events-none absolute inset-0 z-[5] bg-no-repeat"
+            className="previous-profile-ghost pointer-events-none absolute left-[-67%] top-[11%] z-[5] h-[78%] w-[234%] bg-no-repeat"
             style={{
-              backgroundImage: `url('${getCentralSheet(previousProfile.sex)}')`,
+              backgroundImage: `url('${getCentralSheet(previousProfile.sex, previousProfile.ageGroup)}')`,
               backgroundPosition: `${POSE_INDEX[getLonelinessPose(previousProfile.loneliness)] * 50}% center`,
               backgroundSize: "300% 100%",
             }}
@@ -371,7 +393,7 @@ export default function VisualizationScene({
         {[0, 1, 2].map((poseIndex) => (
           <span
             key={poseIndex}
-            className="absolute inset-0 z-10 bg-no-repeat transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+            className="absolute left-[-67%] top-[11%] z-10 h-[78%] w-[234%] bg-no-repeat transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
             style={{
               backgroundImage: `url('${centralSheet}')`,
               backgroundPosition: `${poseIndex * 50}% center`,
@@ -379,8 +401,8 @@ export default function VisualizationScene({
               opacity: selectedPoseIndex === poseIndex ? 1 : 0,
               transform:
                 selectedPoseIndex === poseIndex
-                  ? "translateY(0) scale(1)"
-                  : "translateY(8px) scale(0.98)",
+                  ? `translate(${CENTRAL_POSE_OFFSET[sex][poseIndex]}%, 0) scale(1)`
+                  : `translate(${CENTRAL_POSE_OFFSET[sex][poseIndex]}%, 8px) scale(0.98)`,
             }}
             aria-hidden="true"
           />
